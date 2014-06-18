@@ -1,0 +1,179 @@
+   XmlDOMParser.java
+                	File f = new File ("/Users/Di/Desktop/java_snippets.txt"); 
+                 	BufferedWriter bw = new BufferedWriter (new FileWriter(f,true));
+                	for (String s : row.snippets){
+                		System.out.println(String.valueOf(row.id) + "-------->" + s);
+                		bw.write(String.valueOf(row.id) + "-------->" + s + "\r\n");
+                		bw.flush();
+                		count++;
+                	}     
+                	bw.close();
+                	
+     
+     
+     XmlWriter.java           	
+                			// set attribute to row element
+		Attr id = doc.createAttribute("id");
+		id.setValue("1");
+		row.setAttributeNode(id);
+ 
+		// shorten way
+		// staff.setAttribute("id", "1");
+		
+		//	public static void main(String argv[]) {
+//	 
+//		  XmlWriter xmlwriter = new XmlWriter();
+//		  xmlwriter.addElement("123", "hi,I'm Di");
+//		  xmlwriter.writeToXML("/Users/Di/Desktop/java_compilable.xml");
+//	}
+
+	
+	CompileTester.java
+		
+//	@SuppressWarnings("resource")
+//	public void readFile(){
+//		String temp = "";
+//		String[] str = new String[2];
+//		int i = 0;
+//		try {
+//			BufferedReader br = new BufferedReader(new FileReader(new File("/Users/Di/Desktop/java_snippets.txt")));
+//			while ((temp = br.readLine()) != null )
+//			{
+//				
+//				str = temp.split("-------->");
+////				str[1] = StringEscapeUtils.unescapeHtml4(str[1]);
+////				str[1] = StringEscapeUtils.unescapeHtml3(str[1]);
+////				str[1] = StringEscapeUtils.unescapeXml(str[1]);
+//				snippets.put(str[0], str[1]);
+//				i++;
+//			}
+////			System.out.println(i);
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		Iterator<Entry<String, String>> it = snippets.entrySet().iterator();
+//		while (it.hasNext()){
+//			Map.Entry<String, String> entry = it.next();
+//			System.out.println(entry);
+//		}			
+//	}
+	
+	//		System.out.println(ct.snippets.size());
+//		
+//		JavaFileObject[] javaFileObjects = new JavaFileObject[ct.snippets.size()];
+//		Iterator<Entry<String, String>> it = ct.snippets.entrySet().iterator();
+
+//		int i=0;
+//		for (Map.Entry<String, String> entry: ct.snippets){
+////			Map.Entry<String, String> entry = it.next();
+////			System.out.println(entry);
+//			SimpleJavaFileObject fileObject = new DynamicJavaSourceCodeObject (entry.getKey(), entry.getValue()) ;
+//			ct.doCompilation(fileObject);
+//			javaFileObjects[i] = fileObject;
+//			i++;
+//		}	
+//		
+//		for (JavaFileObject jfo : javaFileObjects){
+//			if(!ct.unCompilable.contains(jfo)){
+//				String id = ((DynamicJavaSourceCodeObject) jfo).getQualifiedName();	
+//				String sourcecode = ((DynamicJavaSourceCodeObject) jfo).getSourceCode();
+//				ct.compilable.put(id, sourcecode);
+//			}
+//		}
+	
+	
+	AstTester.java
+	for (int i = 0; i < problems.length; i++) {
+			System.out.println(problems[i].getMessage());
+		}
+		Message[] messages = cu.getMessages();
+		for (int i = 0; i < messages.length; i++) {
+			System.out.println(messages[i].getMessage());
+		}
+	
+	XmlSAXParser.java
+	package xmlparser;
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+public class XmlSAXParser {
+
+  public static void main(String[] args) throws Exception {
+    SAXParserFactory parserFactor = SAXParserFactory.newInstance();
+    SAXParser parser = parserFactor.newSAXParser();
+    SAXHandler handler = new SAXHandler();
+    parser.parse(ClassLoader.getSystemResourceAsStream("/Users/Di/Desktop/java_body.xml"), handler);
+
+    //Printing the list of data obtained from XML
+    for ( Data row : handler.rowList){
+      System.out.println(row);
+    }
+  }
+}
+/**
+ * The Handler for SAX Events.
+ */
+class SAXHandler extends DefaultHandler {
+
+  List<Data> rowList = new ArrayList<>();
+  Data row = null;
+  String content = null;
+  @Override
+  //Triggered when the start of tag is found.
+  public void startElement(String uri, String localName, 
+                           String qName, Attributes attributes) 
+                           throws SAXException {
+
+    switch(qName){
+      //Create a new Employee object when the start tag is found
+      case "row":
+        row = new Data();
+        break;
+    }
+  }
+
+  @Override
+  public void endElement(String uri, String localName, 
+                         String qName) throws SAXException {
+   switch(qName){
+     //Add the employee to list once end tag is found
+     case "row":
+       rowList.add(row);       
+       break;
+     //For all other end tags the employee has to be updated.
+     case "Id":
+       row.id = content;
+       break;
+     case "code":
+       row.body = content;
+       break;
+   }
+  }
+
+  @Override
+  public void characters(char[] ch, int start, int length) 
+          throws SAXException {
+    content = String.copyValueOf(ch, start, length).trim();
+  }
+
+}
+
+/*class Data {
+  String id;
+  String code;
+  @Override
+  public String toString() {
+    return id +"(" + code + ")";
+  }
+}
+*/
+	
+	
+	
