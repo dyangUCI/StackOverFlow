@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -21,7 +20,7 @@ public class XmlDOMParser {
 
   public static void main(String[] args) throws Exception {
 	
-	File xmlFile = new File("/Users/Di/Desktop/java_body.xml");
+	File xmlFile = new File("/Users/Di/Desktop/postat_body.xml");
     //Get the DOM Builder Factory
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
@@ -80,7 +79,7 @@ public class XmlDOMParser {
      
     }
     
-    xmlwriter.writeToXML("/Users/Di/Desktop/java_snippets.xml");   
+    xmlwriter.writeToXML("/Users/Di/Desktop/postat_snippets.xml");   
     System.out.println("number of cleaned snippets: " + count);
 
   }

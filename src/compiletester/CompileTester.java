@@ -28,6 +28,10 @@ import org.xml.sax.SAXException;
 
 import xmlparser.XmlWriter;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
+import runtester.RunTester;
+
 
 
 
@@ -44,7 +48,7 @@ public class CompileTester {
 	
 	public void readXml(){
 		
-		File xmlFile = new File("/Users/Di/Desktop/java_snippets.xml");
+		File xmlFile = new File("/Users/Di/Desktop/postaj_snippets.xml");
 	    //Get the DOM Builder Factory
 	    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 	    
@@ -78,6 +82,10 @@ public class CompileTester {
 			                break;
 			              case "snippet":
 			                row.snippet = content;	 
+			                //clean the html notations
+			                row.snippet = StringEscapeUtils.unescapeHtml3(row.snippet);
+			                row.snippet = StringEscapeUtils.unescapeHtml4(row.snippet);
+			                row.snippet = StringEscapeUtils.unescapeXml(row.snippet);
 			                /*Creating dynamic java source code file object*/
 				            count++;
 				            SimpleJavaFileObject fileObject = new DynamicJavaSourceCodeObject (row.id, row.snippet);
@@ -163,16 +171,26 @@ public class CompileTester {
 		ct.readXml();
 	
 		XmlWriter xmlCompile = new XmlWriter();	
-		for (DynamicJavaSourceCodeObject djsc : ct.unCompilable){
-			xmlCompile.addElement(djsc.getQualifiedName(), djsc.getSourceCode());
+		for (DynamicJavaSourceCodeObject djsc : ct.compilable){
+			//restore the html notations
+			String source = StringEscapeUtils.escapeHtml3(djsc.getSourceCode());
+            source = StringEscapeUtils.escapeHtml4(source);
+            source = StringEscapeUtils.escapeXml10(source);
+            source = StringEscapeUtils.escapeXml11(source);
+			xmlCompile.addElement(djsc.getQualifiedName(), source);
 		}
-		xmlCompile.writeToXML("/Users/Di/Desktop/java_compilable.xml");
+		xmlCompile.writeToXML("/Users/Di/Desktop/postaj_compilable.xml");
 		
 		XmlWriter xmlUncompile = new XmlWriter();
 		for (DynamicJavaSourceCodeObject djsc : ct.unCompilable){
-			xmlUncompile.addElement(djsc.getQualifiedName(), djsc.getSourceCode());
+			//restore the html notations
+			String source = StringEscapeUtils.escapeHtml3(djsc.getSourceCode());
+            source = StringEscapeUtils.escapeHtml4(source);
+            source = StringEscapeUtils.escapeXml10(source);
+            source = StringEscapeUtils.escapeXml11(source);
+			xmlUncompile.addElement(djsc.getQualifiedName(), source);
 		}
-		xmlUncompile.writeToXML("/Users/Di/Desktop/java_uncompilable.xml");
+		xmlUncompile.writeToXML("/Users/Di/Desktop/postaj_uncompilable.xml");
 				
 		System.out.println("Number of cleaned snippets: "+ ct.count);
 		System.out.println("Number of Compilable Files: "+ ct.compilable.size());

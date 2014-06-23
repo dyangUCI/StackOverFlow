@@ -3,10 +3,12 @@ package asttester;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -45,7 +47,7 @@ public class AstTester {
 	}
 	
 	public void readXml(){	
-		File xmlFile = new File("/Users/Di/Desktop/java_uncompilable.xml");
+		File xmlFile = new File("/Users/Di/Desktop/postaj_uncompilable.xml");
 	    //Get the DOM Builder Factory
 	    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 	    
@@ -79,6 +81,10 @@ public class AstTester {
 			                break;
 			              case "snippet":
 			                row.snippet = content;	 
+			              //clean the html notations
+			                row.snippet = StringEscapeUtils.unescapeHtml3(row.snippet);
+			                row.snippet = StringEscapeUtils.unescapeHtml4(row.snippet);
+			                row.snippet = StringEscapeUtils.unescapeXml(row.snippet);
 			                /*Creating dynamic java source code file object*/
 				            count++;
 				            if(!hasProblems(row.snippet)){
@@ -112,15 +118,25 @@ public class AstTester {
 	
 		XmlWriter xmlParse = new XmlWriter();	
 		for (Snippet sn : at.parsable){
+			//restore the html notations
+			String source = StringEscapeUtils.escapeHtml3(sn.snippet);
+            source = StringEscapeUtils.escapeHtml4(source);
+            source = StringEscapeUtils.escapeXml10(source);
+            source = StringEscapeUtils.escapeXml11(source);
 			xmlParse.addElement(sn.id, sn.snippet);
 		}
-		xmlParse.writeToXML("/Users/Di/Desktop/java_parsable.xml");
+		xmlParse.writeToXML("/Users/Di/Desktop/postaj_parsable.xml");
 		
 		XmlWriter xmlUncompile = new XmlWriter();
 		for (Snippet sn : at.unparsable){
+			//restore the html notations
+			String source = StringEscapeUtils.escapeHtml3(sn.snippet);
+            source = StringEscapeUtils.escapeHtml4(source);
+            source = StringEscapeUtils.escapeXml10(source);
+            source = StringEscapeUtils.escapeXml11(source);
 			xmlUncompile.addElement(sn.id, sn.snippet);
 		}
-		xmlUncompile.writeToXML("/Users/Di/Desktop/java_unparsable.xml");
+		xmlUncompile.writeToXML("/Users/Di/Desktop/postaj_unparsable.xml");
 				
 		System.out.println("Number of uncompilable snippets: "+ at.count);
 		System.out.println("Number of Parsale Files: "+ at.parsable.size());

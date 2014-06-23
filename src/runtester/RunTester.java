@@ -42,7 +42,7 @@ public class RunTester {
             System.out.println("Number of compilable classes: " + files.length);
             for(File f: files){
             	try{
-   //         		System.out.println(f.getName().substring(0,f.getName().length()-6));
+            		System.out.println(f.getName().substring(0,f.getName().length()-6));
             		Class thisClass = loader.loadClass(f.getName().substring(0,f.getName().length()-6));
                     Object instance = thisClass.newInstance();
             	}catch(Exception e){
